@@ -1,0 +1,34 @@
+[project]
+name = "animated_drawings"
+version = "0.1.0"
+description = "Companion code for `A Method For Automatically Animating Children's Drawings of the Human Form.`"
+authors = [
+    {name = "FAIR", email = "jesse.smith@meta.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8.13"
+dependencies = [
+    "numpy>=1.24.4",
+    "scipy>=1.10.0",
+    "scikit-image>=0.19.3",
+    "scikit-learn>=1.1.2",
+    "shapely>=1.8.5",
+    "opencv-python>=4.6.0.66",
+    "Pillow>=10.1.0",
+    "glfw>=2.5.5",
+    "PyOpenGL>=3.1.6",
+    "PyYAML>=6.0.1",
+    "requests>=2.31.0",
+    "torchserve>=0.12.0",
+    "tqdm>=4.66.3",
+    "Flask>=2.3.2",
+    "setuptools>=65.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = []

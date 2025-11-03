@@ -21,7 +21,10 @@ from typing import Tuple, Dict
 import numpy as np
 import numpy.typing as npt
 from pathlib import Path
-from pkg_resources import resource_filename
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files  # type: ignore
 
 
 class MesaView(View):
@@ -66,16 +69,17 @@ class MesaView(View):
         GL.glFramebufferTexture2D(GL.GL_READ_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, self.txtr_id, 0)
 
     def _prep_shaders(self) -> None:
-        BVH_VERT = Path(resource_filename(__name__, "shaders/bvh.vert"))
-        BVH_FRAG = Path(resource_filename(__name__, "shaders/bvh.frag"))
+        shader_path = files('animated_drawings.view').joinpath('shaders')
+        BVH_VERT = Path(str(shader_path.joinpath('bvh.vert')))
+        BVH_FRAG = Path(str(shader_path.joinpath('bvh.frag')))
         self._initiatize_shader('bvh_shader', str(BVH_VERT), str(BVH_FRAG))
 
-        COLOR_VERT = Path(resource_filename(__name__, "shaders/color.vert"))
-        COLOR_FRAG = Path(resource_filename(__name__, "shaders/color.frag"))
+        COLOR_VERT = Path(str(shader_path.joinpath('color.vert')))
+        COLOR_FRAG = Path(str(shader_path.joinpath('color.frag')))
         self._initiatize_shader('color_shader', str(COLOR_VERT), str(COLOR_FRAG))
 
-        TEXTURE_VERT = Path(resource_filename(__name__, "shaders/texture.vert"))
-        TEXTURE_FRAG = Path(resource_filename(__name__, "shaders/texture.frag"))
+        TEXTURE_VERT = Path(str(shader_path.joinpath('texture.vert')))
+        TEXTURE_FRAG = Path(str(shader_path.joinpath('texture.frag')))
         self._initiatize_shader('texture_shader', str(TEXTURE_VERT), str(TEXTURE_FRAG), texture=True)
 
     def _update_shaders_view_transform(self, camera: Camera) -> None:
