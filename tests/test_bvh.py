@@ -3,11 +3,14 @@
 # LICENSE file in the root directory of this source tree.
 
 from animated_drawings.model.bvh import BVH
-from pkg_resources import resource_filename
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 
 def test_bvh_from_file():
-    bvh_fn = resource_filename(__name__, 'test_bvh_files/zombie.bvh')
+    bvh_fn = str(files('tests').joinpath('test_bvh_files/zombie.bvh'))
     b = BVH.from_file(bvh_fn)
 
     # was the skeleton built correctly?

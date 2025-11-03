@@ -20,20 +20,23 @@ RUN conda install python=3.8.13 -y
 
 
 # install python dependencies
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install openmim
-RUN pip install torch==2.0.0
-RUN mim install mmcv-full==1.7.0
-RUN pip install mmdet==2.27.0
+ENV MMCV_WITH_OPS=1
+ENV FORCE_CUDA=0
+RUN pip install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cpu
+# 使用预编译的 mmcv wheel 包，避免编译问题
+RUN pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cpu/torch2.1/index.html
+RUN pip install mmdet==3.2.0
 RUN pip install torchserve
 
 # bugfix for xtcocoapi, an mmpose dependency
 RUN git clone https://github.com/jin-s13/xtcocoapi.git
-WORKDIR xtcocoapi
+WORKDIR /xtcocoapi
 RUN pip install -r requirements.txt
 RUN python setup.py install
 WORKDIR /
-RUN pip install mmpose==0.29.0
-RUN pip install torchvision==0.15.1  # solve torch version problem
+RUN pip install mmpose==1.3.0
 RUN pip install numpy==1.24.4  #solve numpy version problem
 
 # prep torchserve

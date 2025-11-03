@@ -7,7 +7,10 @@ from annotations_to_animation import annotations_to_animation
 from pathlib import Path
 import logging
 import sys
-from pkg_resources import resource_filename
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 
 def image_to_animation(img_fn: str, char_anno_dir: str, motion_cfg_fn: str, retarget_cfg_fn: str):
@@ -32,10 +35,10 @@ if __name__ == '__main__':
     if len(sys.argv) > 3:
         motion_cfg_fn = sys.argv[3]
     else:
-        motion_cfg_fn = resource_filename(__name__, 'config/motion/dab.yaml')
+        motion_cfg_fn = str(files('examples').joinpath('config/motion/dab.yaml'))
     if len(sys.argv) > 4:
         retarget_cfg_fn = sys.argv[4]
     else:
-        retarget_cfg_fn = resource_filename(__name__, 'config/retarget/fair1_ppf.yaml')
+        retarget_cfg_fn = str(files('examples').joinpath('config/retarget/fair1_ppf.yaml'))
 
     image_to_animation(img_fn, char_anno_dir, motion_cfg_fn, retarget_cfg_fn)
