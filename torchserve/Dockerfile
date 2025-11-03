@@ -36,14 +36,19 @@ WORKDIR /xtcocoapi
 RUN pip install -r requirements.txt
 RUN python setup.py install
 WORKDIR /
-RUN pip install mmpose==1.3.0
+RUN pip install mmpose==1.0.0
 RUN pip install numpy==1.24.4  #solve numpy version problem
 
 # prep torchserve
+ARG HTTP_PROXY=http://host.docker.internal:7890
+ARG HTTPS_PROXY=http://host.docker.internal:7890
 RUN mkdir -p /home/torchserve/model-store
-RUN wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_detector.mar -P /home/torchserve/model-store/
-RUN wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_pose_estimator.mar -P /home/torchserve/model-store/
+RUN http_proxy=${HTTP_PROXY} https_proxy=${HTTPS_PROXY} wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_detector.mar -P /home/torchserve/model-store/
+RUN http_proxy=${HTTP_PROXY} https_proxy=${HTTPS_PROXY} wget https://github.com/facebookresearch/AnimatedDrawings/releases/download/v0.0.1/drawn_humanoid_pose_estimator.mar -P /home/torchserve/model-store/
 COPY config.properties /home/torchserve/config.properties
+
+# Force CPU usage
+ENV CUDA_VISIBLE_DEVICES=""
 
 # starting command
 CMD /opt/conda/bin/torchserve --start --disable-token-auth --ts-config /home/torchserve/config.properties && sleep infinity
