@@ -28,8 +28,20 @@ def image_to_annotations(img_fn: str, out_dir: str) -> None:
     outdir = Path(out_dir)
     outdir.mkdir(exist_ok=True)
 
-    # read image
-    img = cv2.imread(img_fn)
+    # read image with alpha channel if present
+    img = cv2.imread(img_fn, cv2.IMREAD_UNCHANGED)
+    
+    # handle images with alpha channel (transparency)
+    if len(img.shape) == 3 and img.shape[2] == 4:
+        # extract alpha channel
+        alpha = img[:, :, 3] / 255.0
+        # extract BGR channels
+        bgr = img[:, :, :3]
+        # create white background
+        white_bg = np.ones_like(bgr, dtype=np.uint8) * 255
+        # blend: white_bg * (1-alpha) + foreground * alpha
+        alpha_3ch = np.stack([alpha, alpha, alpha], axis=2)
+        img = (bgr * alpha_3ch + white_bg * (1 - alpha_3ch)).astype(np.uint8)
 
     # copy the original image into the output_dir
     cv2.imwrite(str(outdir/'image.png'), img)
