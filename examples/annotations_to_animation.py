@@ -31,7 +31,10 @@ def annotations_to_animation(char_anno_dir: str, motion_cfg_fn: str, retarget_cf
         'scene': {'ANIMATED_CHARACTERS': [animated_drawing_dict]},  # add the character to the scene
         'controller': {
             'MODE': 'video_render',  # 'video_render' or 'interactive'
-            'OUTPUT_VIDEO_PATH': str(Path(char_anno_dir, 'video.gif').resolve())}  # set the output location
+            'OUTPUT_VIDEO_PATH': str(Path(char_anno_dir, 'video.gif').resolve())},  # set the output location
+        'view': {
+            'USE_MESA': True  # use offscreen rendering for headless environments
+        }
     }
 
     # write the new mvc config file out
